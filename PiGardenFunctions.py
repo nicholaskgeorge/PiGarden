@@ -9,10 +9,11 @@ class PiGardenFunctions:
         self.wetthreshold = wetthreshold
         #pin where we connect the pi to the relay
         self.valvepin = valvepin
-        #This is how long the valve will stay open at anytime we water
+        #this is how long the valve will stay open at anytime we water
         self.watertime = watertime
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.valvepin, GPIO.OUT)
+        #making the valve start off closed
         GPIO.output(self.valvepin, False)
     def openvalve(self):
         print('Opening Valve')
