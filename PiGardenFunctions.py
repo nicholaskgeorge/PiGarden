@@ -32,6 +32,7 @@ class PiGardenFunctions:
     def iswet(self):
         #The more moist the soil is the lower the value that is recived
         return False if self.wetthreshold>getmoisture() else True
+    #only waters if the soil is wet
     def water(self):
         moisture = 0
         count = 0
@@ -39,13 +40,16 @@ class PiGardenFunctions:
         for i in range(10):
             moisture+=self.getmoisture()
         moisture//=10
-        print('Starting watering')
-        #We will keep watering until the soil is moist. There is a count in case
-        #something has gone wrong with the sensor. This stops all the water
-        #getting drained
-        while not iswet() and count<8:
-            self.openvale()
-            time.sleep(self.watertime)
-            self.closevalve()
-            count+=1
-        print('Watering finished')
+        if not iswet():
+            print('Starting watering')
+            #We will keep watering until the soil is moist. There is a count in case
+            #something has gone wrong with the sensor. This stops all the water
+            #getting drained
+            while not iswet() and count<8:
+                self.openvale()
+                time.sleep(self.watertime)
+                self.closevalve()
+                count+=1
+            print('Watering finished')
+        else:
+            print('Soil is already wet')
