@@ -19,6 +19,3 @@ while True:
              \ndefault - resets setting to the default recommended settings
         """)
     command = raw_input("Type your command here ---> ")
-while True:
-    if (garden.gethour(),garden.getminutes()) in settimes:
-        garden.water()

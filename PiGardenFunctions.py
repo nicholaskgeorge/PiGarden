@@ -3,14 +3,22 @@ import mcp3008
 import datetime
 
 class PiGardenFunctions:
-    def __init__(self,valvepin=16,wetthreshold=430, watertime=5):
+    def __init__(self):
         #the wet threshold will need to be found experimentally this is
         #just a value I found online
-        self.wetthreshold = wetthreshold
+        self.wetthreshold=0
         #pin where we connect the pi to the relay
-        self.valvepin = valvepin
+        self.valvepin=0
         #this is how long the valve will stay open at anytime we water
-        self.watertime = watertime
+        self.waterduration=0
+        #set times of day to water plants. Stores hour and minutes in tuples
+        self.watertimes=[]
+        #number of days per week to waters
+        self.daysperweek=0
+        #List of 7 boolean values corresponding to each day. Determins whether to water or not
+        self.waterdays=[]
+        #data us pulled from a file which holds settings
+        self.updatefromfile()
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.valvepin, GPIO.OUT)
         #making the valve start off closed
@@ -53,3 +61,28 @@ class PiGardenFunctions:
             print('Watering finished')
         else:
             print('Soil is already wet')
+    #This function decides what days to water the plants on based on the amount
+    #of times per week the user has indicated. Returns a list of 7 booleans
+    #indicating whether it is a day to water or not
+    def calculatewaterdays(self):
+        days = [False]*7
+        #spreads out water days as evenly as possible
+        for i in range(7,step=7//daysperweek):
+            days[i] = True
+        return days
+    #returns True if it is a watering day, otherwise False
+    def daytowater(self):
+        #gets date in day/month/year format
+        today = date.today.strftime("%d/%m/%Y")
+        #gets the number of the day of the week. NOTE: Monday corresponds to the
+        #zeroth day of the week
+        day = datetime.datetime.strptime(today, '%d/%m/%Y').weekday()
+        #Returns whether the day is a watering day
+        return waterdays[day]
+
+    def automated(self):
+        while True:
+            time.sleep(20)
+                if daytowater():
+                    if (self.gethour(),self.getminutes()) in self.watertimes:
+                        self.water()
