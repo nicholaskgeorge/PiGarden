@@ -57,6 +57,7 @@ class PiGardenFunctions:
                 self.openvale()
                 time.sleep(self.watertime)
                 self.closevalve()
+                time.sleep(3)
                 count+=1
             print('Watering finished')
         else:
@@ -86,3 +87,26 @@ class PiGardenFunctions:
                 if daytowater():
                     if (self.gethour(),self.getminutes()) in self.watertimes:
                         self.water()
+    #function will start the automation thread
+    def start(self):
+        pass
+    #Reads file and updates settings into instance variables
+    # settings are stored in the folllowing line order:
+    # 1.waterduration
+    # 2.daysperweek
+    # 3.waterdays
+    def updatefromfile(self):
+        settings = open('Settings.txt','r')
+        raw = file.readlines()
+        file.close
+        #parsing line by line and gets data
+        lines = raw.split('\n')
+        line1=lines[0]
+        waterduration = int(line1[line1.find(':')+1:])
+        line2 = lines[1]
+        daysperweek = int(line2[line2.find(':')+1:])
+        #will finish this soon
+        line3 = lines[2]
+    
+    def defaultsettings(self):
+        pass

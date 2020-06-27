@@ -1,0 +1,3 @@
+waterduration: 
+daysperweek:
+waterdays:

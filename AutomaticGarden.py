@@ -3,9 +3,6 @@ from PiGardenFunctions import PiGardenFunctions
 garden = PiGardenFunctions()
 #allow for automatic times to be set. Each element in the list contains a tuple of the
 #hour and minute in 24 hour time.
-settimes = [(7,0)]
-waterperday=1
-waterperweek=7
 print("""Hello! Welcome to AutoGarden. Here you can change and customize the settings
        \n once you have all the parts connected, type the following commands in order to customize the system""")
 while True:

@@ -1,0 +1,35 @@
+AutoGarden
+**********
+The purpose of this program is to run a fully autonomous and hands off irrigation
+system. The user can change setting and customize the amount of days per week to
+the watering is done, schedule times for watering, duration of watering session
+and more.
+
+Layout
+======
+The file PiGardenFunctions.py contains all the methods and variables which control
+the system contained in a single class called PiGardenFunctions. AutomaticGarden.py
+basically creates a menu for the user to interact with the system. Settings saved
+to the Settings.txt file
+
+Variables
+=========
+*wetthreshold- value of the under which the soil is considered moist. Note the
+lower the valus is the more moist the soil is
+*valvepin- pin in which the pi will be connected to the relay board
+*waterduration- amount of time in seconds that the valve will stay open for each
+aplication of water
+*watertimes-list which stores the scheduled times to water the plants. Each time
+is stores in a tuple of length 2 where index 0 is the hour and index 1 is the minute
+*daysperweek- amount of times per week the plants will be watered
+*waterdays- list of length 7 which corresponds to each day of the week. Each day
+a boolean which corresponds to whether the plants should be watered on that day.
+Note that Monday is index 0 and Sunday is index 6
+
+Methods
+=========
+*openvalve- turns signal on relay high to open valve
+*closevalve- turns signal on relay low to close valve
+*getmoisture- pulls moisture values from the moisture sensor. Uses the mcp3008
+library to pull values from the moisture sensor. Sensor must be connected to pin
+5 of the mcp3008 chip 
