@@ -32,4 +32,5 @@ Methods
 *closevalve- turns signal on relay low to close valve
 *getmoisture- pulls moisture values from the moisture sensor. Uses the mcp3008
 library to pull values from the moisture sensor. Sensor must be connected to pin
-5 of the mcp3008 chip 
+5 of the mcp3008 chip
+ 

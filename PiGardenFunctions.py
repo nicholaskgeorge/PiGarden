@@ -15,9 +15,9 @@ class PiGardenFunctions:
         self.watertimes=[]
         #number of days per week to waters
         self.daysperweek=0
-        #List of 7 boolean values corresponding to each day. Determins whether to water or not
+        #List of 7 integears either 0 or 1 corresponding to each day. Determins whether to water or not
         self.waterdays=[]
-        #data us pulled from a file which holds settings
+        #data is pulled from a file which holds settings
         self.updatefromfile()
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.valvepin, GPIO.OUT)
@@ -62,6 +62,7 @@ class PiGardenFunctions:
             print('Watering finished')
         else:
             print('Soil is already wet')
+
     #This function decides what days to water the plants on based on the amount
     #of times per week the user has indicated. Returns a list of 7 booleans
     #indicating whether it is a day to water or not
@@ -71,6 +72,7 @@ class PiGardenFunctions:
         for i in range(7,step=7//daysperweek):
             days[i] = True
         return days
+
     #returns True if it is a watering day, otherwise False
     def daytowater(self):
         #gets date in day/month/year format
@@ -83,10 +85,12 @@ class PiGardenFunctions:
 
     def automated(self):
         while True:
-            time.sleep(20)
-                if daytowater():
-                    if (self.gethour(),self.getminutes()) in self.watertimes:
-                        self.water()
+            #If it is just waiting we can give it really long delays to save
+            #save computing power
+            time.sleep(55)
+            if daytowater():
+                if (self.gethour(),self.getminutes()) in self.watertimes:
+                    self.water()
     #function will start the automation thread
     def start(self):
         pass
@@ -102,11 +106,80 @@ class PiGardenFunctions:
         #parsing line by line and gets data
         lines = raw.split('\n')
         line1=lines[0]
-        waterduration = int(line1[line1.find(':')+1:])
+        waterduration = int(line1[line1.find(':')+1:].strip())
         line2 = lines[1]
-        daysperweek = int(line2[line2.find(':')+1:])
-        #will finish this soon
+        daysperweek = int(line2[line2.find(':')+1:].strip())
         line3 = lines[2]
-    
+        waterdays=line3[line3.find(':')+1:]
+        waterdays = waterday.strip().split(' ')
+        line4 = lines[3]
+        #applying read data
+        self.waterduration = waterduration
+        self.daysperweek = daysperweek
+        self.waterdays = waterdays
+        watertimes = []
+        rawlist= line4.strip().split(' ')
+        for i in rawlist:
+            colon = i.find(':')
+            watertimes += (i[:colon],i[colon+1:])
+        self.watertimes = watertimes
+
     def defaultsettings(self):
-        pass
+        self.changewaterduration(5)
+        self.changewatertimes([(6:30),(19:00)])
+        self.changedaysperweek(7)
+        self.changewaterdays([1,1,1,1,1,1,1])
+    #functions to change Settings
+    def changewaterduration(self, time):
+        self.waterduration = time
+        settings = open('Settings.txt','r')
+        raw = file.readlines()
+        file.close
+        lines = raw.split('\n')
+        lines[0] = "waterduration: "+string(time)
+        updated = ''.join(lines)
+        settings = open('Settings.txt','w')
+        settings.write(updated)
+        settings.close()
+    #must be passed a list of times with the hours and minutes in a tuple
+    def changewatertimes(self, times):
+        self.waterduration = times
+        settings = open('Settings.txt','r')
+        raw = file.readlines()
+        file.close
+        lines = raw.split('\n')
+        newtime = ''
+        for i in times:
+            newtime = string(i[0])+":"+string(i[1])+" "
+        lines[3]= "watertimes: "+newtime
+        updated = ''.join(lines)
+        settings = open('Settings.txt','w')
+        settings.write(updated)
+        settings.close()
+
+    def changedaysperweek(self, numdays):
+        self.changedaystowater = numdays
+        settings = open('Settings.txt','r')
+        raw = file.readlines()
+        file.close
+        lines = raw.split('\n')
+        lines[1] = "daysperweek: "+string(numdays)
+        updated = ''.join(lines)
+        settings = open('Settings.txt','w')
+        settings.write(updated)
+        settings.close()
+    #must be given a list of length 7 which each element being a 1 or a zero
+    def changewaterdays(self, days):
+        self.waterduration = times
+        settings = open('Settings.txt','r')
+        raw = file.readlines()
+        file.close
+        lines = raw.split('\n')
+        newdays = ''
+        for i in days:
+            days = string(i)+' '
+        lines[2]= "waterdays: "+newtime
+        updated = ''.join(lines)
+        settings = open('Settings.txt','w')
+        settings.write(updated)
+        settings.close()
