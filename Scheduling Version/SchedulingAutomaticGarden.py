@@ -16,3 +16,28 @@ while True:
              \ndefault - resets setting to the default recommended settings
         """)
     command = raw_input("Type your command here ---> ")
+    if command == 'start':
+        garden.start()
+    elif command == 'stop':
+        pass
+    elif command == 'wsettings':
+        print("""
+                 \n***COMANDS***
+                 \nseeset- lets you see the current Settings
+                 \ndefault- reverts to default Settings
+                 \nwaterduration- change how long valvue stays open each application (in seconds)
+                 \nwatertimes- change times that watering happens each day
+            """)
+    elif command == 'schedule':
+        pass
+    elif command == 'waternow':
+        garden.water()
+    elif command == 'default':
+        garden.default()
+    else:
+        print("Sorry your that isn't a command")
+
+def settingings():
+    command = raw_input("Type your command here ---> ")
+    if command == 'seeset':
+        return 

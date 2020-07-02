@@ -40,13 +40,14 @@ class PiGardenFunctions:
         return datetime.datetime.now().time().minutes
     def iswet(self):
         #The more moist the soil is the lower the value that is recived
-        return False if self.wetthreshold>getmoisture() else True
+        return False if self.wetthreshold>self.getmoisture() else True
     #only waters if the soil is wet
     def water(self):
         moisture = 0
         count = 0
         #taking an avergae to acount for measurement error
         for i in range(10):
+            time.sleep(0.5)
             moisture+=self.getmoisture()
         moisture//=10
         if not iswet():
@@ -64,6 +65,34 @@ class PiGardenFunctions:
         else:
             print('Soil is already wet')
 
+    def updatefromfile(self):
+        settings = open('Settings.txt','r')
+        raw = file.readlines()
+        file.close
+        #parsing line by line and gets data
+        lines = raw.split('\n')
+        line1=lines[0]
+        waterduration = int(line1[line1.find(':')+1:].strip())
+        line2 = lines[1]
+        daysperweek = int(line2[line2.find(':')+1:].strip())
+        line3 = lines[2]
+        waterdays=line3[line3.find(':')+1:]
+        waterdays = waterday.strip().split(' ')
+        line4 = lines[3]
+        #applying read data
+        self.waterduration = waterduration
+        self.daysperweek = daysperweek
+        self.waterdays = waterdays
+        watertimes = []
+        rawlist= line4.strip().split(' ')
+        for i in rawlist:
+            colon = i.find(':')
+            watertimes += (i[:colon],i[colon+1:])
+        self.watertimes = watertimes
+
+    """All funtion below are for if you want to make an interactive system where the
+    program schedules itself rather than releying on a cron job to turn on.
+    These are not crucial"""
     #This function decides what days to water the plants on based on the amount
     #of times per week the user has indicated. Returns a list of 7 booleans
     #indicating whether it is a day to water or not
@@ -100,30 +129,6 @@ class PiGardenFunctions:
     # 1.waterduration
     # 2.daysperweek
     # 3.waterdays
-    def updatefromfile(self):
-        settings = open('Settings.txt','r')
-        raw = file.readlines()
-        file.close
-        #parsing line by line and gets data
-        lines = raw.split('\n')
-        line1=lines[0]
-        waterduration = int(line1[line1.find(':')+1:].strip())
-        line2 = lines[1]
-        daysperweek = int(line2[line2.find(':')+1:].strip())
-        line3 = lines[2]
-        waterdays=line3[line3.find(':')+1:]
-        waterdays = waterday.strip().split(' ')
-        line4 = lines[3]
-        #applying read data
-        self.waterduration = waterduration
-        self.daysperweek = daysperweek
-        self.waterdays = waterdays
-        watertimes = []
-        rawlist= line4.strip().split(' ')
-        for i in rawlist:
-            colon = i.find(':')
-            watertimes += (i[:colon],i[colon+1:])
-        self.watertimes = watertimes
 
     def defaultsettings(self):
         self.changewaterduration(5)
