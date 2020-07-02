@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 import mcp3008
 import datetime
+import threading
 
 class PiGardenFunctions:
     def __init__(self):
@@ -93,7 +94,7 @@ class PiGardenFunctions:
                     self.water()
     #function will start the automation thread
     def start(self):
-        pass
+        gardening = threading.Thread(target=self.automated, args=(),daemon = True)
     #Reads file and updates settings into instance variables
     # settings are stored in the folllowing line order:
     # 1.waterduration
