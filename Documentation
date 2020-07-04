@@ -1,36 +1,96 @@
 AutoGarden
 **********
 The purpose of this program is to run a fully autonomous and hands off irrigation
-system. The user can change setting and customize the amount of days per week to
-the watering is done, schedule times for watering, duration of watering session
-and more.
+system. The user can change setting in the setting file and use a corn job to make
+it come on when needed.
 
 Layout
 ======
 The file PiGardenFunctions.py contains all the methods and variables which control
 the system contained in a single class called PiGardenFunctions. AutomaticGarden.py
-basically creates a menu for the user to interact with the system. Settings saved
+is the file which starts the garden and does the actual watering. Settings are saved
 to the Settings.txt file
+
+NOTE
+=====
+Throughout the class one will note that there are variables and functions related
+to Scheduling. At first the program was being written with the idea of making it
+keep track of scheduling itself, with the user interacting with the program
+through a menu and not have to deal with cron jobs. It was decided that for the
+first version we do not need to make it that user friendly so these functions and
+variables are not being used. They are present if anyone wants to use them in the
+future. Note they have not been debugged.
 
 Variables
 =========
 *wetthreshold- value of the under which the soil is considered moist. Note the
-lower the valus is the more moist the soil is
+lower the value is the more moist the soil is
+
 *valvepin- pin in which the pi will be connected to the relay board
+
 *waterduration- amount of time in seconds that the valve will stay open for each
-aplication of water
-*watertimes-list which stores the scheduled times to water the plants. Each time
-is stores in a tuple of length 2 where index 0 is the hour and index 1 is the minute
-*daysperweek- amount of times per week the plants will be watered
-*waterdays- list of length 7 which corresponds to each day of the week. Each day
-a boolean which corresponds to whether the plants should be watered on that day.
-Note that Monday is index 0 and Sunday is index 6
+application of water
+
+*watertimes- list which stores scheduled times to water. Each element is a tuple
+of length 2 where index 0 is the hours and 1 is the minutes. Note it should be in
+24 hour times
+
+*daysperweek= how many days per week the plants should be watered. The program
+would later spread out the water days as evenly as possible
+
+*waterdays = list of length 7 which corresponds to whether you should water on a
+certain day or not. each element is a 1 or 0 for true or false.
 
 Methods
 =========
 *openvalve- turns signal on relay high to open valve
+
 *closevalve- turns signal on relay low to close valve
+
 *getmoisture- pulls moisture values from the moisture sensor. Uses the mcp3008
 library to pull values from the moisture sensor. Sensor must be connected to pin
-5 of the mcp3008 chip
- 
+5 of the mcp3008 chip. Return the values
+
+*iswet - checks to see if the moisture readings meet the threshold and is wet.
+returns boolean
+
+*water - actually waters the garden. Checks that the soil is wet and the waters
+the garden until it is. Will not water more than 8 times if the soil is still not
+wet (in case something is wrong with the sensor). Returns True if soil has been
+watered and false if it was already moist.
+
+*updatefromfile- pulls settings from the Settings.txt file. The format for storage
+is that values are writen after the colon for each specific setting. Settings that
+are lists should have the elements seperated by spaces. Watering times should have
+times written as the normally are (for example 8:00 or 17:34).
+
+*defaultsettings- reverts all settings in the file to the default:
+  1.waterduration = 5 seconds
+  2.watertimes are 6:30am and 7:30pm
+  3.daysperweek = 7
+  4.waterdays = [1,1,1,1,1,1,1] (water every day)
+
+Note: all the functions bellow are for scheduling
+
+*calculatewaterdays- returns a list of 1s and 0s of length 7 describing which
+days of the week to water. 1 means to water and 0 means to not. Calculates based
+on the class variable daysperweek
+
+*daytowater- return true or false depending on if the current day is a day to waters
+
+*automated- function that is meant to run all the time. Will water the garden at
+the scheduled time on a day to waters
+
+*start - function which starts a thread for the automated function.
+
+*changewaterduration- changes waterduration variable in settings and current instance of
+the class. Takes and integer as an input
+
+*changewatertimes- changes times which waterings are schduled to happen. takes a
+list of tuples corresponding to times as input ( [(6,30),(21,50)] for example)
+
+*changedaysperweek- changes daysperweek variable in settings and current instance of
+the class. Takes and integer as an input
+
+*changewaterdays - changes waterdays variable in settings and current instance of
+the class. Takes a list of length 7 where each element is a 0 or 1 ([0,1,1,0,1,1,0] for example)

@@ -33,7 +33,7 @@ class PiGardenFunctions:
     def getmoisture(self):
         #the 5 here corresponds to the port on the mcp3008 chip which converts
         #analog to digital.
-        mcp3008.readadc(5)
+        return mcp3008.readadc(5)
     def gethour(self):
         return datetime.datetime.now().time().hour
     def getminutes(self):
@@ -47,7 +47,7 @@ class PiGardenFunctions:
         count = 0
         #taking an avergae to acount for measurement error
         for i in range(10):
-            time.sleep(0.5)
+            time.sleep(0.2)
             moisture+=self.getmoisture()
         moisture//=10
         if not iswet():
@@ -62,8 +62,10 @@ class PiGardenFunctions:
                 time.sleep(3)
                 count+=1
             print('Watering finished')
+            return True
         else:
             print('Soil is already wet')
+            return False
 
     def updatefromfile(self):
         settings = open('Settings.txt','r')
@@ -90,6 +92,12 @@ class PiGardenFunctions:
             watertimes += (i[:colon],i[colon+1:])
         self.watertimes = watertimes
 
+    def defaultsettings(self):
+        self.changewaterduration(5)
+        self.changewatertimes([(6:30),(19:00)])
+        self.changedaysperweek(7)
+        self.changewaterdays([1,1,1,1,1,1,1])
+
     """All funtion below are for if you want to make an interactive system where the
     program schedules itself rather than releying on a cron job to turn on.
     These are not crucial"""
@@ -97,10 +105,10 @@ class PiGardenFunctions:
     #of times per week the user has indicated. Returns a list of 7 booleans
     #indicating whether it is a day to water or not
     def calculatewaterdays(self):
-        days = [False]*7
+        days = [0]*7
         #spreads out water days as evenly as possible
-        for i in range(7,step=7//daysperweek):
-            days[i] = True
+        for i in range(0,7,7//daysperweek):
+            days[i] = 1
         return days
 
     #returns True if it is a watering day, otherwise False
@@ -124,17 +132,7 @@ class PiGardenFunctions:
     #function will start the automation thread
     def start(self):
         gardening = threading.Thread(target=self.automated, args=(),daemon = True)
-    #Reads file and updates settings into instance variables
-    # settings are stored in the folllowing line order:
-    # 1.waterduration
-    # 2.daysperweek
-    # 3.waterdays
 
-    def defaultsettings(self):
-        self.changewaterduration(5)
-        self.changewatertimes([(6:30),(19:00)])
-        self.changedaysperweek(7)
-        self.changewaterdays([1,1,1,1,1,1,1])
     #functions to change Settings
     def changewaterduration(self, time):
         self.waterduration = time
