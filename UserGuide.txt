@@ -1,0 +1,20 @@
+Autogarden Mannual
+******************
+
+Steps For Physical Setup
+========================
+1.Place the hardware of the system in a safe place where it cannot be wet or
+tampered with near the garden.
+2.Place the solar panels in a spot in which they seem most likely to get adequate
+sun.
+3.Connect a solenoid valve of the system to the water source of the garden. Keep
+in mind that the size of the valve is 1/2" so you may need to make a converter pipe
+of some kind.
+4.Connect a soaker hose to the other end of the valve. bury the hose under the
+ground very near to the roots of the plants in the garden.
+5.Take the moisture sensor and insert it into the dirt closest to the roots of
+the plant.
+
+Software Setup
+==============
+Scheduling for the garden

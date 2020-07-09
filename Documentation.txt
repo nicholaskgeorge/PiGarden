@@ -1,5 +1,5 @@
-AutoGarden
-**********
+AutoGarden Documentation
+************************
 The purpose of this program is to run a fully autonomous and hands off irrigation
 system. The user can change setting in the setting file and use a corn job to make
 it come on when needed.
@@ -52,7 +52,7 @@ library to pull values from the moisture sensor. Sensor must be connected to pin
 5 of the mcp3008 chip. Return the values
 
 *iswet - checks to see if the moisture readings meet the threshold and is wet.
-returns boolean
+returns a Boolean
 
 *water - actually waters the garden. Checks that the soil is wet and the waters
 the garden until it is. Will not water more than 8 times if the soil is still not
@@ -60,8 +60,8 @@ wet (in case something is wrong with the sensor). Returns True if soil has been
 watered and false if it was already moist.
 
 *updatefromfile- pulls settings from the Settings.txt file. The format for storage
-is that values are writen after the colon for each specific setting. Settings that
-are lists should have the elements seperated by spaces. Watering times should have
+is that values are written after the colon for each specific setting. Settings that
+are lists should have the elements separated by spaces. Watering times should have
 times written as the normally are (for example 8:00 or 17:34).
 
 *defaultsettings- reverts all settings in the file to the default:
